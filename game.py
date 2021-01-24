@@ -29,16 +29,31 @@ class Game(object):
       worm_inner_segment_rect = pygame.Rect(x+4, y+4, Config.CELLSIZE-8, Config.CELLSIZE-8)
       pygame.draw.rect(self.screen, Config.GREEN, worm_inner_segment_rect)
 
+  def draw_apple(self):
+    x = self.apple.x * Config.CELLSIZE
+    y = self.apple.y * Config.CELLSIZE
+    apple_segment_rect = pygame.Rect(x, y, Config.CELLSIZE, Config.CELLSIZE)
+    pygame.draw.rect(self.screen, Config.RED, apple_segment_rect)
+
   def draw(self):
     self.screen.fill(Config.BG_COLOR)
     self.draw_grid()
     self.draw_worm()
+    self.draw_apple()
     pygame.display.update()
     self.clock.tick(Config.FPS)
 
   def handle_key_events(self, event):
     if event.key == pygame.K_ESCAPE:
       pygame.quit()
+    elif event.key == pygame.K_LEFT and self.snake.direction != self.snake.RIGHT:
+      self.snake.direction = self.snake.LEFT
+    elif event.key == pygame.K_RIGHT and self.snake.direction != self.snake.LEFT:
+      self.snake.direction = self.snake.RIGHT
+    elif event.key == pygame.K_UP and self.snake.direction != self.snake.DOWN:
+      self.snake.direction = self.snake.UP
+    elif event.key == pygame.K_DOWN and self.snake.direction != self.snake.UP:
+      self.snake.direction = self.snake.DOWN
 
   def is_game_over(self):
     if (self.snake.worm_coords[self.snake.HEAD]['x'] == -1 or
