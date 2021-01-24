@@ -35,11 +35,18 @@ class Game(object):
     apple_segment_rect = pygame.Rect(x, y, Config.CELLSIZE, Config.CELLSIZE)
     pygame.draw.rect(self.screen, Config.RED, apple_segment_rect)
 
+  def draw_score(self, score):
+    score_surface = self.BASICFONT.render('Score: %s' % (score), True, Config.WHITE)
+    score_rect = score_surface.get_rect()
+    score_rect.topleft = (Config.WINDOW_WIDTH - 120, 10)
+    self.screen.blit(score_surface, score_rect)
+
   def draw(self):
     self.screen.fill(Config.BG_COLOR)
     self.draw_grid()
     self.draw_worm()
     self.draw_apple()
+    self.draw_score(score = len(self.snake.worm_coords) - 3)
     pygame.display.update()
     self.clock.tick(Config.FPS)
 
