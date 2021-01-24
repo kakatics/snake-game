@@ -12,6 +12,12 @@ class Game(object):
     pygame.display.set_caption('Wormy')
     self.apple = Apple()
     self.snake = Snake()
+
+  def draw_press_key_msg(self):
+    press_key_surface = self.BASICFONT.render('Press a key to play.', True, Config.DARKGRAY)
+    press_key_rect = press_key_surface.get_rect()
+    press_key_rect.topleft = (Config.WINDOW_WIDTH -200, Config.WINDOW_HEIGHT -30)
+    self.screen.blit(press_key_surface, press_key_rect)
   
   def draw_grid(self):
     for x in range(0, Config.WINDOW_WIDTH, Config.CELLSIZE):
@@ -81,7 +87,7 @@ class Game(object):
     self.apple = Apple()
     return True
 
-  def run(self):
+  def game_loop(self):
     while True:
       for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -93,4 +99,51 @@ class Game(object):
       self.draw()
       if self.is_game_over():
         break
+
+  def check_for_key_press(self):
+    if len(pygame.event.get(pygame.QUIT)) > 0:
+      pygame.quit()
+
+    key_up_events = pygame.event.get(pygame.KEYUP)
+
+    if len(key_up_events) == 0:
+      return None
+
+    if key_up_events[0].key == pygame.K_ESCAPE:
+      pygame.quit()
+      quit()
+
+    return key_up_events[0].key
+
+  def display_game_over(self):
+    game_over_font = pygame.font.Font('freesansbold.ttf', 150)
+    game_surface = game_over_font.render('Game', True, Config.WHITE)
+    over_surface = game_over_font.render('Over', True, Config.WHITE)
+    game_rect = game_surface.get_rect()
+    over_rect = over_surface.get_rect()
+    game_rect.midtop = (Config.WINDOW_WIDTH / 2, 10)
+    over_rect.midtop = (Config.WINDOW_WIDTH / 2, game_rect.height + 10 + 25)
+    self.screen.blit(game_surface, game_rect)
+    self.screen.blit(over_surface, over_rect)
+
+    self.draw_press_key_msg()
+    pygame.display.update()
+    pygame.time.wait(500)
+
+    self.check_for_key_press()
+
+    while True:
+      if self.check_for_key_press():
+        pygame.event.get()
+        return
+
+  def show_start_screen(self):
+
+
+  def run(self):
+    #self.show_start_screen()
+
+    while True:
+      self.game_loop()
+      self.display_game_over()
     
